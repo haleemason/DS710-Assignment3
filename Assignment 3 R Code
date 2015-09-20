@@ -1,0 +1,299 @@
+DS 710 - R Programming Assignment
+Assignment 3
+Halee Mason
+
+
+1.	Analyzing Used Car Prices
+
+a)	Download Cars 2005.csv, load the data into R, and attach it.
+(Dataset: “Car Data," submitted by Shonda Kuiper, Grinnell College. Dataset obtained from the Journal of Statistics Education (http://www.amstat.org/publications/jse). Accessed 3 June 2015. Used by permission of author.)
+mycars = read.csv(file="C:/Users/halee.mason/Documents/R/Cars 2005.csv", header=TRUE)
+attach(mycars)
+
+b)	Make a histogram of the prices of cars in the data.  Describe the shape of the distribution.
+Right skewed
+ 
+c)	What proportion of cars in the data set cost between $10,000 and $20,000?
+meetCriteria = ( which( (Price > 10000) & (Price < 20000) ) )
+> length(meetCriteria)/length(Price)
+[1] 0.5621891
+
+d)	Find the mean and median price.  Which is larger?  Why does this make sense?
+> mean(Price)
+[1] 21343.14
+> median(Price)
+[1] 18025
+
+The Mean is larger. This makes sense because the data is skewed right and the mean is more sensitive to extreme values/outliers than the median.
+
+
+e)	Add a vertical line to the histogram to denote the mean price.  Add a legend to the graph.
+  
+f)	Transform the price to reduce its skew, and make a histogram of the transformed price.  Fit a normal distribution to the transformed price, and graph the normal density curve on the same plot as the histogram.  How well does a normal distribution fit the transformed data?
+
+ 
+logPrice <- log(Price)
+hist(logPrice, prob=T)
+meanPrice <- mean(logPrice)
+sdPrice <- sd(logPrice)
+curve(dnorm(x, mean = meanPrice, sd = sdPrice),  col="blue", lwd=2, add=T)
+
+We can see a clear bell shaped curve associated with this data, and a normal distribution fits this transformed data better than the normal non-log Price. 
+
+g)	Make a scatterplot of transformed price versus engine size, measured in liters.  Describe the relationship between these two variables.
+ 
+Linear, positive slope, weak/moderate
+
+h)	Find the correlation between transformed price and engine size in liters.  Explain what it tells us.
+> cor(logPrice,Liter)
+[1] 0.5904097
+
+It has a positive correlation of 0.59, which means as one variable gets bigger, the other variable tends to get bigger.  A cor of 1 would mean it has the strongest linear relationship.
+
+i)	Modify your scatterplot in part g to use one color of plotting symbol for cars with leather interiors, and a different color for cars without leather interiors.  Add a legend to your plot.
+ 
+
+j)	Make a barplot of the types (Sedan, Hatchback, etc.) of cars in the data.
+
+ 
+
+k)	Make a barplot of the types of cars and whether they have leather interiors.  Add a legend to your plot.
+ 
+
+l)	Make a boxplot of (untransformed) price by type of car.  In words, summarize what it shows.
+ 
+Price by car type shows up that Convertibles are the most expensive since they have the highest mean, there are more outliers on convertibles, coupes, and sedans. The outliers are all above the Boxplots, so this indicates that the data is right skewed. 
+
+m)	Create two different histograms in a vertical stack that allow comparison of (untransformed) price according to whether the car has a leather interior.  Use the same horizontal axis for each to enable comparison, and use informative labels for each graph and the x-axis.
+
+ 
+I’m not sure what the frequency is representing, so I plotted this Histogram of Price showing which cars have leather in them:
+ 
+n)	Create a side-by-side histogram to allow the same comparison as in part l.  Add a legend to your plot.
+o)	
+install.packages( "plotrix")
+library( plotrix )
+multhist( list(WithLeatherPresent, WithOutLeatherPresent), col=c("black", "red"),  xlab = "Number of Cars", ylab = "Frequency (absolute counts = FALSE)", main = "Cars With Leather and Without Leather", freq = F )
+legend("topright", legend = c("w/o Leather", "with Leather"), fill = c("red", "black"))
+
+ 
+
+Submit a .doc, .docx, or .pdf document containing your R code, output and graphs, and interpretations (where requested) to parts a-n.  It is not necessary to include R code where you were testing code or where you made a mistake--just submit the final version.
+
+R Code to answer questions a-n:
+
+mycars = read.csv(file="C:/Users/halee.mason/Documents/R/Cars 2005.csv", header=TRUE)
+attach(mycars)
+
+head(mycars)
+
+hist(Price)
+meetCriteria = ( which( (Price > 10000) & (Price < 20000) ) )
+length(meetCriteria)/length(Price)
+
+mean(Price)
+median(Price)
+
+hist(Price)
+abline(v = 21343.14, col = "red", lwd = 2)
+par(xpd=TRUE)
+legend("topright", legend = c("Mean price", "Price of Cars"), col = c("red", "black"), lwd = 2)
+
+logPrice <- log(Price)
+hist(logPrice, prob=T)
+meanPrice <- mean(logPrice)
+sdPrice <- sd(logPrice)
+curve(dnorm(x, mean = meanPrice, sd = sdPrice),  col="blue", lwd=2, add=T)
+
+curve(dnorm(x, mean = meanPrice), 
+      col="blue", lwd=2, add=TRUE, yaxt="n")
+plot(logPrice ~ Liter)
+length(logPrice)/length(Liter)
+cor(logPrice,Liter)
+
+length(Leather)
+mycolors = rep( "black", 804 )
+toChange = which(Leather == 0)
+
+length(toChange)
+mycolors[ toChange ] = "red"
+
+cartype = table(Type)
+cartype
+barplot( cartype, cex.axis = 1, las=1, col = mycolors )
+legend("topleft", legend = c("w/o Leather", "wtih Leather"), fill = c("red", "black"))
+
+boxplot(Price ~ Type)
+
+length(Leather)
+mycolors = rep( "black", 804 )
+toChange = which(Leather == 0)
+
+length(toChange)
+mycolors[ toChange ] = "red"
+
+withLeather = toChange
+withoutLeather = mycolors - toChange
+length(mycolors)
+mycolors
+
+
+leatherPresent = table(Leather)
+leatherPresent
+
+length(Leather)
+WithLeatherPresent = which(Leather == 1)
+length(WithLeatherPresent)
+WithOutLeatherPresent = which(Leather == 0)
+length(WithOutLeatherPresent)
+
+table(leather)
+par( mfrow = c( 2, 1 ) )
+hist(WithLeatherPresent, ylim = c(0, 100)) 
+hist(WithOutLeatherPresent, ylim = c(0, 100))
+
+hist(WithLeatherPresent, col = mycolors)
+
+hist(mycolors)
+hist(SalePrice, xlab = “Price in Dollars”, ylab = “Number of Houses”, main = “My Awesome Histogram”
+
+hist(Leather)
+
+hist(Price, col = mycolors, xlab = "Price in Dollars", ylab = "Number of Cars", main = "Histogram of Cars")
+legend("topright", legend = c("w/o Leather", "with Leather"), fill = c("red", "black"))
+
+install.packages( "plotrix")
+library( plotrix )
+multhist( list(WithLeatherPresent, WithOutLeatherPresent), col=c("black", "red"),  xlab = "Number of Cars", ylab = "Frequency (absolute counts = FALSE)", main = "Cars With Leather and Without Leather", freq = F )
+legend("topright", legend = c("w/o Leather", "with Leather"), fill = c("red", "black"))
+
+2.	Analyzing the running speed of mammals
+
+a.	In R, type
+
+install.packages("quantreg")
+data(Mammals, package="quantreg")
+
+This will load a data set called Mammals, on the maximum land speed of various species of mammal.  Attach the data and look at the first few lines.
+
+> attach(Mammals)
+> head(Mammals)
+  weight speed hoppers specials
+1   6000    35   FALSE    FALSE
+2   4000    26   FALSE    FALSE
+3   3000    25   FALSE    FALSE
+4   1400    45   FALSE    FALSE
+5    400    70   FALSE    FALSE
+6    350    70   FALSE    FALSE
+
+(Source:  Garland, T. (1983) The relation between maximal running speed and body mass in terrestrial mammals, J. Zoology, 199, 1557-1570.
+Metadata:  http://vincentarelbundock.github.io/Rdatasets/doc/quantreg/Mammals.html, accessed 7 June 2015.)
+
+b. Decide whether either of the quantitative variables should be transformed.  Justify your decision using appropriate plots and/or descriptive statistics.
+
+I think the variables should be transformed because it is heavily right skewed. Transforming the data will make the distribution more normal. There is an extreme outlier with a value of 6000 that is skewing the data.
+
+> hist(weight)
+ 
+> logWeight <- log(weight)
+> hist(logWeight)
+ 
+
+
+c.  Use appropriate graphs and/or descriptive statistics to describe the relationship between maximum land speed and body weight.  Does it matter whether the animal is a “hopper” (such as a kangaroo)?  Explain why you chose the graphs and/or statistics that you chose.
+
+Using descriptive statistics the mean, median, and SD of logSpeed and logWeight are as follows:
+> mean(logWeight)
+[1] 2.572423
+> mean(logSpeed)
+[1] 3.558214
+
+> median(logWeight)
+[1] 3.526361
+> median(logSpeed)
+[1] 3.871201
+
+> sd(logWeight)
+[1] 3.356262
+> sd(logSpeed)
+[1] 0.8890507
+
+
+
+I chose a scatterplot because it allows me to compare two variables, weight versus speed.
+ 
+According to the logScatterplot of Speed versus Weight, as an animal weighs less their speed is increased up until a point of around weight 4log(Kg) where the speed starts to level off and then at the very end even decrease a little.  
+
+The hoppers have a range of mobility but a majority of them seem to be faster. 
+#To Analyze the Hoppers:
+head(Mammals)
+length(hoppers)
+
+myhoppers = rep("black", 107)
+toChange = which(hoppers == FALSE)  
+length(toChange)
+myhoppers[ toChange ] = "red"
+
+#Added Hoppers to the Scatterplot in Red:
+plot(logWeight, logSpeed, xlab = "logWeight", ylab = "logSpeed", col = myhoppers)
+legend("topleft", legend = c("Hoppers", "Not Hoppers"), fill = c("red", "black"))
+ 
+
+#Analyze Specials:
+length(specials)
+myspecials = rep("black", 107)
+Changeto = which(specials == FALSE)  
+length(Changeto) #97
+myspecials[ Changeto ] = "blue"
+
+#Added Specials to the Scatterplot in Red:
+plot(logWeight, logSpeed, xlab = "logWeight", ylab = "logSpeed", col = myspecials)
+legend("topleft", legend = c("Specials", "Not Specials"), fill = c("blue", "black"))
+ 
+Conclusion: As the mammals weigh more, their speed tends to decrease. 
+P.S. Looking at it in log transformation is confusing me and I am not sure if I am interpreting the information backwards.
+ 
+
+Submit your graphs and written analysis and justifications as a .doc, .docx., or .pdf document.
+install.packages("quantreg")
+data(Mammals, package="quantreg")
+
+data(Mammals)
+attach(Mammals)
+head(Mammals)
+
+hist(weight)
+logWeight <- log(weight)
+hist(logWeight)
+
+logSpeed <- log(speed)
+
+plot(logWeight, logSpeed, xlab = "logWeight", ylab = "logSpeed")
+
+#To Analyze the Hoppers:
+head(Mammals)
+length(hoppers)
+
+myhoppers = rep("black", 107)
+toChange = which(hoppers == FALSE)  
+length(toChange)
+myhoppers[ toChange ] = "red"
+
+#Added Hoppers to the Scatterplot in Red:
+plot(logWeight, logSpeed, xlab = "logWeight", ylab = "logSpeed", col = myhoppers)
+legend("topleft", legend = c("Hoppers", "Not Hoppers"), fill = c("red", "black"))
+
+#Analyze Specials:
+length(specials)
+myspecials = rep("black", 107)
+Changeto = which(specials == FALSE)  
+length(Changeto) #97
+myspecials[ Changeto ] = "blue"
+
+#Added Specials to the Scatterplot in Red:
+plot(logWeight, logSpeed, xlab = "logWeight", ylab = "logSpeed", col = myspecials)
+legend("topleft", legend = c("Specials", "Not Specials"), fill = c("blue", "black"))
+
+#Looking at the Data in Non-Log to confirm conclusion:
+plot(weight, speed, xlab = "Weight", ylab = "Speed", col = myspecials, main = "Weight versus Speed in Mammals")
+legend("topright", legend = c("Specials", "Not Specials"), fill = c("blue", "black"))
